@@ -425,15 +425,86 @@ let products = [
     price: 35,
   },
 ];
+let users = [
+  {username:"Emp101",password:"Emp101",name:"Jack Smith",role:"user"},
+  {username:"Emp102",password:"Emp102",name:"Mary Gomes",role:"user"},
+  {username:"Emp201",password:"Emp201",name:"Anna Steve",role:"admin"},
+  {username:"Emp202",password:"Emp202",name:"Bob Jenner",role:"admin"},
+]
+
+
+app.post("/productApp/login",function(req,res){
+  let page = req.body;
+  let user;
+  let log = users.find((lg)=>lg.username===page.username);
+  if(log){
+    user = log.username===page.password;
+  }
+  if(user){
+    res.send(log);
+  }
+  else{
+    res.status(400).send("Invalid username or password");
+    
+  }
+})
+
+app.get("/productApp/users", function (req, res) {
+  res.send(users);
+});
+
+app.post("/productApp/users", (req, res) => {
+  const user = req.body;
+  let arr = users.find((fd)=>fd.username===user.username);
+  if(arr){
+    res.status(400).send("Username already exist");
+  }else{
+    users.push(user);
+    res.send(user);
+  }
+  // console.log(product);
+});
+
+app.get("/productApp/users/:username",function(req,res){
+  let username = req.params.username;
+  let name = users.find((ur)=>ur.username===username);
+  name ? res.send(name) : res.send("Username not found");
+})
+
+app.put("/productApp/users/:username", function (req, res) {
+  let username = req.params.username;
+  const user = req.body;
+  // console.log(id, product);
+  let index = users.findIndex((obj1) => obj1.username === username);
+  if (index >= 0) {
+    users[index] = user;
+    res.send(user);
+  } else res.send("not found");
+});
+
+app.delete("/productApp/users/:username", function (req, res) {
+  let username = req.params.username;
+  let index = users.findIndex((obj1) => obj1.username === username);
+  if (index >= 0) {
+    let user = users.splice(index, 1);
+    res.send(user);
+  }
+  res.send("not found");
+});
 
 app.get("/productApp/products", function (req, res) {
   res.send(products);
 });
 app.post("/productApp/products", (req, res) => {
   const product = req.body;
-  products.push(product);
-  console.log(product);
-  res.send(product);
+  let arr = products.find((fd)=>fd.id==product.id);
+  if(arr){
+    res.status(400).send("Product Id already exist");
+  }else{
+    products.push(product);
+    res.send(product);
+  }
+  // console.log(product);
 });
 app.get("/productApp/products/:id", function (req, res) {
   let id = req.params.id;
